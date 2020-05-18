@@ -8,6 +8,7 @@ const angleOffset = Math.PI * 4;
 
 let particles;
 let flowField;
+let palette;
 
 function setupField() {
   particles = [];
@@ -34,9 +35,11 @@ function setupField() {
 function mouseClicked() {
   clear();
   setupField();
+  palette = choosePalette();
 }
 
 function setup() {
+  palette = choosePalette();
   createCanvas(windowWidth, windowHeight);
   cols = floor(width / resolution);
   rows = floor(height / resolution);
@@ -59,8 +62,17 @@ function makeParticle() {
     pos,
     vel: createVector(0, 0),
     acc: createVector(0, 0),
-    color: random(['#eff3c6', '#77d8d8', '#4cbbb9', '#0779e4']),
+    color: random(palette),
   };
+}
+
+function choosePalette() {
+  return random([
+    ['#eff3c6', '#77d8d8', '#4cbbb9', '#0779e4'],
+    ['#f1e3cb', '#f9b384', '#ca5116', '#581c0c'],
+    ['#f0f5f9', '#c9d6df', '#52616b', '#1e2022'],
+    ['#cefff1', '#ace7ef', '#a6acec', '#a56cc1'],
+  ]);
 }
 
 function updateParticle(p) {
