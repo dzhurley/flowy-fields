@@ -1,11 +1,19 @@
+const gui = new dat.GUI();
+
 let cols;
 let rows;
 
-const inc = 0.02;
-const resolution = 10;
-const numParticles = 3000;
-const angleOffset = Math.PI * 4;
+const params = {
+  inc: 0.02,
+  numParticles: 3000,
+  angleOffset: Math.PI * 4,
+};
 
+gui.add(params, 'inc', 0.002, 0.1, 0.002);
+gui.add(params, 'numParticles', 1000, 4000, 100);
+gui.add(params, 'angleOffset', Math.PI / 2, Math.PI * 24, Math.PI / 2);
+
+let resolution = 10;
 let particles;
 let flowField;
 let palette;
@@ -13,7 +21,7 @@ let palette;
 function setupField() {
   particles = [];
   flowField = new Array(cols * rows);
-  for (let i = 0; i < numParticles; i++) {
+  for (let i = 0; i < params.numParticles; i++) {
     particles.push(makeParticle());
   }
 
@@ -22,21 +30,29 @@ function setupField() {
     xoff = 0;
     for (let x = 0; x < cols; x++) {
       const index = x + y * cols;
-      const angle = noise(xoff, yoff, frameCount) * angleOffset;
+      const angle = noise(xoff, yoff, frameCount) * params.angleOffset;
       const v = p5.Vector.fromAngle(angle);
       v.setMag(1);
       flowField[index] = v; //store all of the vectors calculated into flow field
-      xoff += inc;
+      xoff += params.inc;
     }
-    yoff += inc;
+    yoff += params.inc;
   }
 }
 
-function mouseClicked() {
+function reset() {
   clear();
   setupField();
   palette = choosePalette();
 }
+
+function mouseClicked(evt) {
+  if (evt.target.nodeName === 'CANVAS') {
+    reset();
+  }
+}
+
+gui.onChange(reset);
 
 function setup() {
   palette = choosePalette();
