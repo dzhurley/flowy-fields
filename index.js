@@ -7,11 +7,19 @@ const params = {
   inc: 0.02,
   numParticles: 3000,
   angleOffset: Math.PI * 4,
+  palette: 'random',
 };
 
+const palettes = {
+  cool: ['#eff3c6', '#77d8d8', '#4cbbb9', '#0779e4'],
+  warm: ['#f1e3cb', '#f9b384', '#ca5116', '#581c0c'],
+  mono: ['#f0f5f9', '#c9d6df', '#52616b', '#1e2022'],
+  purple: ['#cefff1', '#ace7ef', '#a6acec', '#a56cc1'],
+};
 gui.add(params, 'inc', 0.002, 0.1, 0.002);
 gui.add(params, 'numParticles', 1000, 4000, 100);
 gui.add(params, 'angleOffset', Math.PI / 2, Math.PI * 24, Math.PI / 2);
+gui.add(params, 'palette', ['random', 'cool', 'warm', 'mono', 'purple']);
 
 let resolution = 10;
 let particles;
@@ -40,10 +48,16 @@ function setupField() {
   }
 }
 
+function choosePalette() {
+  return params.palette === 'random'
+    ? random(Object.values(palettes))
+    : palettes[params.palette];
+}
+
 function reset() {
+  palette = choosePalette();
   clear();
   setupField();
-  palette = choosePalette();
 }
 
 function mouseClicked(evt) {
@@ -80,15 +94,6 @@ function makeParticle() {
     acc: createVector(0, 0),
     color: random(palette),
   };
-}
-
-function choosePalette() {
-  return random([
-    ['#eff3c6', '#77d8d8', '#4cbbb9', '#0779e4'],
-    ['#f1e3cb', '#f9b384', '#ca5116', '#581c0c'],
-    ['#f0f5f9', '#c9d6df', '#52616b', '#1e2022'],
-    ['#cefff1', '#ace7ef', '#a6acec', '#a56cc1'],
-  ]);
 }
 
 function updateParticle(p) {
